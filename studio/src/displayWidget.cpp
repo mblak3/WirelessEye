@@ -254,8 +254,18 @@ void displayWidget::addDataForEntireFrame(double* data, int nSamples){
     return;
   }
   painter->begin(img);
-  for(uint32_t j= 1; j < nSamples; j++){
+
+  // Original code
+  //for(uint32_t j= 1; j < nSamples; j++){
+  //  data[j] = data[j] + dataOffset;
+
+  // Modified code
+  for(uint32_t j= 1; j < 64; j++){
+    if (j == 0 || j == 1 || j == 2 || j == 3 || j == 4 || j == 31 || j == 32 || j == 61 || j == 62 || j == 63 )
+      continue;
     data[j] = data[j] + dataOffset;
+
+    printf("value of [ %"PRIu32" ] is %f \n", j, data[j]);
 
     if(autoScaling){
       if(fabs(data[j]) < minValue){
@@ -265,7 +275,7 @@ void displayWidget::addDataForEntireFrame(double* data, int nSamples){
         maxValue = fabs(data[j]);
       }
     }
-    uint32_t scaleFactor = (img->height()/NCSISamples);
+    uint32_t scaleFactor = (img->height()/64);     //NCSISamples); // change NCSISamples to 64 or 54
 
     ub = (double) upperValueBound/1000.0 * (maxValue - minValue) + minValue;
     lb = (double) lowerValueBound/1000.0 * (maxValue - minValue) + minValue;
